@@ -1,8 +1,15 @@
+# SYNOPSIS 
+#       This is a small version control system 
+# DESCRIPTION
+#       This is a minimal version control system I made with python 
+#       This has functions such as intlization addding a file, commiting, creating a  branch, switching the brannch, an d shows the log
+
 import os 
 import hashlib
 import sys
 import time
 
+# This function creates the directories and other inlitization files 
 def init_repo():
     if os.path.exists('.Byte'):
         print('Repository already exists')
@@ -14,6 +21,7 @@ def init_repo():
         f.write('refs: refs/heads/master')
     print('Initialized repository')
 
+# This hashes the object usually the text of the file so that it is safe 
 def hash_obj(data):
     sha = hashlib.sha1()
     sha.update(data)
@@ -25,6 +33,7 @@ def store_obj(data):
         f.write(data)
     return obj_id
 
+# This addes a file to the folder checks if the file is tehre and addes it to the head file 
 def add_file(filename):
     if not os.path.exists(filename):
         print('File not found')
@@ -40,6 +49,9 @@ def add_file(filename):
 
     print(f"Added {filename}")
 
+# This is a commit part of VCS this askes for your email  and then check of the index file is there 
+# and open the head file and add teh current head and finally 
+# the commit ID is added to teh Head file 
 def commit(message):
     email = input('Enter your email: ')
     if not os.path.exists('.Byte/index'):
@@ -66,6 +78,8 @@ def commit(message):
 
     print(f'Committed to {commit_id}')
 
+# This function creates a branch it takes a branch name and added craetes a new file in the 
+# .Byte/refs/heads/ where it craetes a  new folder for the new branch
 def create_branch(branch_name):
     head = open(".Byte/HEAD").read().strip().split(': ')[1]
     commit_id = open(f".Byte/{head}").read().strip()
@@ -75,6 +89,10 @@ def create_branch(branch_name):
 
     print(f'Created branch {branch_name} craeted at {commit_id}')
 
+# This function switches the branch 
+# first it chec k if the branch exsists 
+# Next it writes the branch anme to teh Head and all the
+# commits which come after are for the switched branch
 def switch_branch(branch_name):
     branch_path = f'.Byte/refs/heads/{branch_name}'
     if not os.path.exists(branch_path):
@@ -86,6 +104,9 @@ def switch_branch(branch_name):
     
     print(f'Switched to branch {branch_name}')
 
+# Shows the log of the VCS which is ususally the .Byte/HEAD file
+# This also checks the branch files and then logs them with each 
+# individual commit and description 
 def show_log():
     with open(".Byte/HEAD") as f:
         ref_line = f.read().strip()
